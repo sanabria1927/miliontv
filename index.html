@@ -62,10 +62,10 @@
             z-index: 10;
         }
         .prev {
-            left: 0;
+            left: 10px;
         }
         .next {
-            right: 0;
+            right: 10px;
         }
     </style>
 </head>
@@ -85,7 +85,7 @@
         async function fetchMovies() {
             const response = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=es-ES&page=1`);
             const data = await response.json();
-            movies = data.results.slice(0, 30);
+            movies = data.results.slice(0, 25);
             renderMovies();
         }
 
@@ -101,16 +101,26 @@
                 `;
                 moviesContainer.appendChild(movieDiv);
             });
+            duplicateMovies();
+        }
+
+        function duplicateMovies() {
+            const clones = moviesContainer.innerHTML;
+            moviesContainer.innerHTML += clones;
         }
 
         let scrollAmount = 0;
         function scrollMovies(direction) {
             const scrollStep = 220;
-            const maxScroll = (movies.length * scrollStep) - (5 * scrollStep);
             scrollAmount += direction * scrollStep;
-            if (scrollAmount < 0) scrollAmount = 0;
-            if (scrollAmount > maxScroll) scrollAmount = maxScroll;
+            moviesContainer.style.transition = "transform 0.5s ease-in-out";
             moviesContainer.style.transform = `translateX(-${scrollAmount}px)`;
+            if (scrollAmount >= (movies.length * scrollStep)) {
+                scrollAmount = 0;
+                moviesContainer.style.transition = "none";
+                moviesContainer.style.transform = "translateX(0)";
+                setTimeout(() => moviesContainer.style.transition = "transform 0.5s ease-in-out");
+            }
         }
 
         fetchMovies();
