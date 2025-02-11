@@ -3,102 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Películas Populares</title>
+    <title>Películas con Tráilers</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #181818;
-            color: white;
+            background-color: #fff;
+            color: black;
             text-align: center;
-            margin: 0;
-            padding: 0;
+            font-family: Arial, sans-serif;
         }
-        h1 {
-            margin: 20px 0;
-        }
-        .carousel-container {
-            position: relative;
-            max-width: 100%;
-            overflow: hidden;
-        }
-        .movies-container {
+        .movie-container {
             display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             gap: 20px;
-            overflow-x: auto;
-            scroll-behavior: smooth;
             padding: 20px;
-            white-space: nowrap;
         }
         .movie {
-            flex: 0 0 auto;
-            width: 250px; /* Tamaño más grande */
-            background: #222;
+            width: 300px;
+            height: 450px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #f0f0f0;
             padding: 10px;
-            border-radius: 10px;
-            text-align: center;
+            border: 3px solid black; /* Contorno negro */
         }
-        img {
+        .movie img {
             width: 100%;
+            height: 80%;
             border-radius: 10px;
         }
-        .arrow {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0, 0, 0, 0.5);
+        .movie button {
+            width: 80%;
+            padding: 10px;
+            background-color: red;
             color: white;
             border: none;
+            border-radius: 5px;
             cursor: pointer;
-            font-size: 24px;
-            padding: 10px;
-            border-radius: 50%;
+            font-size: 16px;
         }
-        .arrow-left {
-            left: 10px;
-        }
-        .arrow-right {
-            right: 10px;
+        .movie button:hover {
+            background-color: darkred;
         }
     </style>
 </head>
 <body>
-
-    <h1>🎬 Películas Populares</h1>
-
-    <div class="carousel-container">
-        <button class="arrow arrow-left" onclick="scrollMovies(-1)">&#9664;</button>
-        <div class="movies-container" id="movies"></div>
-        <button class="arrow arrow-right" onclick="scrollMovies(1)">&#9654;</button>
-    </div>
-
+    <h1>Películas Destacadas</h1>
+    <div class="movie-container" id="movies"></div>
+    
     <script>
-        const API_KEY = "c904b36b37e7d8a61984f31f65276d40";
-        const API_URL = `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=es-ES&page=1`;
+        const movies = [
+            { title: "Oppenheimer", poster: "https://image.tmdb.org/t/p/w500/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg", trailer: "https://www.youtube.com/watch?v=LZTDaNuIhWg" },
+            { title: "Avatar: El Camino del Agua", poster: "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg", trailer: "https://www.youtube.com/watch?v=eZmMHLiI3LY" },
+            { title: "John Wick 4", poster: "https://image.tmdb.org/t/p/w500/vZloFAK7NmvMGKE7VkF5UHaz0I.jpg", trailer: "https://www.youtube.com/watch?v=ouA24T1Tz-Y" }
+        ];
 
-        async function getMovies() {
-            const response = await fetch(API_URL);
-            const data = await response.json();
-            const moviesContainer = document.getElementById("movies");
+        const container = document.getElementById("movies");
 
-            data.results.forEach(movie => {
-                const movieElement = document.createElement("div");
-                movieElement.classList.add("movie");
-                movieElement.innerHTML = `
-                    <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
-                    <h3>${movie.title}</h3>
-                    <p>${movie.release_date}</p>
-                `;
-                moviesContainer.appendChild(movieElement);
-            });
-        }
-
-        function scrollMovies(direction) {
-            const moviesContainer = document.getElementById("movies");
-            moviesContainer.scrollBy({ left: direction * 300, behavior: "smooth" });
-        }
-
-        getMovies();
+        movies.forEach(movie => {
+            const movieDiv = document.createElement("div");
+            movieDiv.classList.add("movie");
+            
+            movieDiv.innerHTML = `
+                <img src="${movie.poster}" alt="${movie.title}">
+                <button onclick="window.open('${movie.trailer}', '_blank')">Ver Tráiler</button>
+            `;
+            
+            container.appendChild(movieDiv);
+        });
     </script>
-
 </body>
 </html>
