@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Películas Populares</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .movies-container {
+            display: flex;
+            overflow-x: auto;
+            padding: 10px;
+        }
+        .movie {
+            margin: 10px;
+            width: 150px;
+            text-align: center;
+        }
+        .movie img {
+            width: 100%;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2 style="text-align: center;">Películas Populares</h2>
+    <div class="movies-container" id="movies"></div>
+
+    <script>
+        fetch("https://api.themoviedb.org/3/movie/popular?api_key=c904b36b37e7d8a61984f31f65276d40")
+            .then(response => response.json())
+            .then(data => {
+                let moviesHTML = "";
+                data.results.slice(0, 10).forEach(movie => {
+                    moviesHTML += `
+                        <div class="movie">
+                            <img src="https://image.tmdb.org/t/p/w200${movie.poster_path}" alt="${movie.title}">
+                            <p>${movie.title}</p>
+                        </div>
+                    `;
+                });
+                document.getElementById("movies").innerHTML = moviesHTML;
+            })
+            .catch(error => console.log("Error al cargar las películas:", error));
+    </script>
+</body>
+</html>
