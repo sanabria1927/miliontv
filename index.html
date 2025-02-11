@@ -3,47 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Películas Populares</title>
+    <title>Vista Previa de Películas</title>
     <style>
+        /* Tu código CSS aquí */
         body {
             font-family: Arial, sans-serif;
+            background-color: #181818;
+            color: white;
+            text-align: center;
         }
         .movies-container {
             display: flex;
-            overflow-x: auto;
-            padding: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
         }
         .movie {
-            margin: 10px;
-            width: 150px;
-            text-align: center;
-        }
-        .movie img {
-            width: 100%;
+            width: 200px;
+            background: #222;
+            padding: 10px;
             border-radius: 10px;
+        }
+        img {
+            width: 100%;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
-    <h2 style="text-align: center;">Películas Populares</h2>
+
+    <h1>Películas Populares</h1>
     <div class="movies-container" id="movies"></div>
 
     <script>
-        fetch("https://api.themoviedb.org/3/movie/popular?api_key=c904b36b37e7d8a61984f31f65276d40")
-            .then(response => response.json())
-            .then(data => {
-                let moviesHTML = "";
-                data.results.slice(0, 10).forEach(movie => {
-                    moviesHTML += `
-                        <div class="movie">
-                            <img src="https://image.tmdb.org/t/p/w200${movie.poster_path}" alt="${movie.title}">
-                            <p>${movie.title}</p>
-                        </div>
-                    `;
-                });
-                document.getElementById("movies").innerHTML = moviesHTML;
-            })
-            .catch(error => console.log("Error al cargar las películas:", error));
+        // Tu código JavaScript aquí
+        const API_KEY = "c904b36b37e7d8a61984f31f65276d40";
+        const API_URL = `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=es-ES&page=1`;
+
+        async function getMovies() {
+            const response = await fetch(API_URL);
+            const data = await response.json();
+            const moviesContainer = document.getElementById("movies");
+
+            data.results.forEach(movie => {
+                const movieElement = document.createElement("div");
+                movieElement.classList.add("movie");
+                movieElement.innerHTML = `
+                    <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
+                    <h3>${movie.title}</h3>
+                    <p>${movie.release_date}</p>
+                `;
+                moviesContainer.appendChild(movieElement);
+            });
+        }
+
+        getMovies();
     </script>
+
 </body>
 </html>
+
