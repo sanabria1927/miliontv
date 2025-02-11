@@ -3,41 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vista Previa de Películas</title>
+    <title>Películas Populares</title>
     <style>
-        /* Tu código CSS aquí */
         body {
             font-family: Arial, sans-serif;
             background-color: #181818;
             color: white;
             text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            margin: 20px 0;
+        }
+        .carousel-container {
+            position: relative;
+            max-width: 100%;
+            overflow: hidden;
         }
         .movies-container {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
             gap: 20px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
             padding: 20px;
+            white-space: nowrap;
         }
         .movie {
-            width: 200px;
+            flex: 0 0 auto;
+            width: 250px; /* Tamaño más grande */
             background: #222;
             padding: 10px;
             border-radius: 10px;
+            text-align: center;
         }
         img {
             width: 100%;
-            border-radius: 5px;
+            border-radius: 10px;
+        }
+        .arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            padding: 10px;
+            border-radius: 50%;
+        }
+        .arrow-left {
+            left: 10px;
+        }
+        .arrow-right {
+            right: 10px;
         }
     </style>
 </head>
 <body>
 
-    <h1>Películas Populares</h1>
-    <div class="movies-container" id="movies"></div>
+    <h1>🎬 Películas Populares</h1>
+
+    <div class="carousel-container">
+        <button class="arrow arrow-left" onclick="scrollMovies(-1)">&#9664;</button>
+        <div class="movies-container" id="movies"></div>
+        <button class="arrow arrow-right" onclick="scrollMovies(1)">&#9654;</button>
+    </div>
 
     <script>
-        // Tu código JavaScript aquí
         const API_KEY = "c904b36b37e7d8a61984f31f65276d40";
         const API_URL = `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=es-ES&page=1`;
 
@@ -58,9 +92,13 @@
             });
         }
 
+        function scrollMovies(direction) {
+            const moviesContainer = document.getElementById("movies");
+            moviesContainer.scrollBy({ left: direction * 300, behavior: "smooth" });
+        }
+
         getMovies();
     </script>
 
 </body>
 </html>
-
