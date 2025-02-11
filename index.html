@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Películas Destacadas</title>
+    <title>Películas Populares</title>
     <style>
         body {
-            background-color: black;
-            color: white;
+            background-color: #fff;
+            color: black;
             text-align: center;
             font-family: Arial, sans-serif;
             margin: 0;
@@ -15,75 +15,105 @@
         }
         .carousel-container {
             position: relative;
-            width: 80%;
+            width: 90%;
             margin: auto;
             overflow: hidden;
-        }
-        .movie-container {
-            display: flex;
-            gap: 10px;
-            transition: transform 0.5s ease;
             padding: 20px 0;
+        }
+        .movie-carousel {
+            display: flex;
+            gap: 15px;
+            transition: transform 0.5s ease-in-out;
+            white-space: nowrap;
         }
         .movie {
             min-width: 200px;
-            height: 300px;
-            position: relative;
+            max-width: 200px;
             border-radius: 10px;
             overflow: hidden;
-            transition: transform 0.3s ease;
+            position: relative;
+            background: black;
+            padding: 5px;
+            text-align: center;
+            color: white;
+            display: inline-block;
         }
         .movie img {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 10px;
+            height: auto;
+            display: block;
+            border-radius: 5px;
         }
-        .movie:hover {
-            transform: scale(1.1);
+        .movie p {
+            margin: 5px 0;
+            font-size: 14px;
         }
         .nav-button {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background-color: rgba(0, 255, 0, 0.7);
+            background-color: green;
             border: none;
             color: white;
             font-size: 24px;
-            padding: 10px;
             cursor: pointer;
-            border-radius: 50%;
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 10;
         }
         .prev {
-            left: -40px;
+            left: 0;
         }
         .next {
-            right: -40px;
-        }
-        .nav-button:hover {
-            background-color: rgba(0, 255, 0, 1);
+            right: 0;
         }
     </style>
 </head>
 <body>
-    <h1>Películas Destacadas</h1>
+    <h1>Películas Populares</h1>
     <div class="carousel-container">
         <button class="nav-button prev" onclick="scrollMovies(-1)">&#10094;</button>
-        <div class="movie-container" id="movies">
-            <div class="movie"><img src="https://image.tmdb.org/t/p/w500/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg" alt="Oppenheimer"></div>
-            <div class="movie"><img src="https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg" alt="Avatar: El Camino del Agua"></div>
-            <div class="movie"><img src="https://image.tmdb.org/t/p/w500/vZloFAK7NmvMGKE7VkF5UHaz0I.jpg" alt="John Wick 4"></div>
-        </div>
+        <div class="movie-carousel" id="movies"></div>
         <button class="nav-button next" onclick="scrollMovies(1)">&#10095;</button>
     </div>
+    
     <script>
-        let scrollPosition = 0;
-        function scrollMovies(direction) {
-            const container = document.getElementById("movies");
-            const scrollAmount = 220;
-            scrollPosition += direction * scrollAmount;
-            container.style.transform = `translateX(${-scrollPosition}px)`;
+        const apiKey = "c904b36b37e7d8a61984f31f65276d40";
+        const moviesContainer = document.getElementById("movies");
+        let movies = [];
+
+        async function fetchMovies() {
+            const response = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=es-ES&page=1`);
+            const data = await response.json();
+            movies = data.results.slice(0, 30);
+            renderMovies();
         }
+
+        function renderMovies() {
+            moviesContainer.innerHTML = "";
+            movies.forEach(movie => {
+                const movieDiv = document.createElement("div");
+                movieDiv.classList.add("movie");
+                movieDiv.innerHTML = `
+                    <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
+                    <p><strong>${movie.title}</strong></p>
+                    <p>${movie.release_date}</p>
+                `;
+                moviesContainer.appendChild(movieDiv);
+            });
+        }
+
+        let scrollAmount = 0;
+        function scrollMovies(direction) {
+            const scrollStep = 220;
+            const maxScroll = (movies.length * scrollStep) - (5 * scrollStep);
+            scrollAmount += direction * scrollStep;
+            if (scrollAmount < 0) scrollAmount = 0;
+            if (scrollAmount > maxScroll) scrollAmount = maxScroll;
+            moviesContainer.style.transform = `translateX(-${scrollAmount}px)`;
+        }
+
+        fetchMovies();
     </script>
 </body>
 </html>
