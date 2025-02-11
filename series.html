@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Series Populares</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #181818;
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            margin: 20px 0;
+        }
+        .carousel-container {
+            position: relative;
+            max-width: 100%;
+            overflow: hidden;
+        }
+        .series-container {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            padding: 20px;
+            white-space: nowrap;
+        }
+        .serie {
+            flex: 0 0 auto;
+            width: 250px; /* Tamaño de las miniaturas */
+            background: #222;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        img {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            padding: 10px;
+            border-radius: 50%;
+        }
+        .arrow-left {
+            left: 10px;
+        }
+        .arrow-right {
+            right: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>📺 Series Populares</h1>
+
+    <div class="carousel-container">
+        <button class="arrow arrow-left" onclick="scrollSeries(-1)">&#9664;</button>
+        <div class="series-container" id="series"></div>
+        <button class="arrow arrow-right" onclick="scrollSeries(1)">&#9654;</button>
+    </div>
+
+    <script>
+        const API_KEY = "c904b36b37e7d8a61984f31f65276d40";
+        const API_URL = `https://api.themoviedb.org/3/tv/popular?api_key=${API_KEY}&language=es-ES&page=1`;
+
+        async function getSeries() {
+            const response = await fetch(API_URL);
+            const data = await response.json();
+            const seriesContainer = document.getElementById("series");
+
+            data.results.forEach(serie => {
+                const serieElement = document.createElement("div");
+                serieElement.classList.add("serie");
+                serieElement.innerHTML = `
+                    <img src="https://image.tmdb.org/t/p/w500${serie.poster_path}" alt="${serie.name}">
+                    <h3>${serie.name}</h3>
+                    <p>${serie.first_air_date}</p>
+                `;
+                seriesContainer.appendChild(serieElement);
+            });
+        }
+
+        function scrollSeries(direction) {
+            const seriesContainer = document.getElementById("series");
+            seriesContainer.scrollBy({ left: direction * 300, behavior: "smooth" });
+        }
+
+        getSeries();
+    </script>
+
+</body>
+</html>
